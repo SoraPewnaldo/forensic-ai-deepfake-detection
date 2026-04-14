@@ -1,0 +1,11 @@
+﻿venvs/
+datasets/
+checkpoints/
+calibration_artefacts/*.pt
+*.pt
+*.bin
+*.pth
+__pycache__/
+*.pyc
+.env
+.ipynb_checkpoints/

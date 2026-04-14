@@ -1,0 +1,68 @@
+# FORENSIC-v2 SINGLE SOURCE OF TRUTH (SSOT) CONFIGURATION
+
+paths:
+  project_root: "E:\\Pojects\\workspace\\forensic-v2"
+  datasets:
+    # Processed (crop) datasets
+    ffpp: "E:\\Pojects\\workspace\\datasets\\ffpp"
+    wilddeepfake: "E:\\Pojects\\workspace\\datasets\\wilddeepfake"
+    celebdf: "E:\\Pojects\\workspace\\datasets\\celebdf" # Updated path
+    
+    # Raw datasets (For extraction scripts only, DO NOT use in dataset loaders)
+    celebdf_raw: "E:\\Pojects\\workspace\\datasets\\CelebDF"
+  
+  splits:
+    ffpp_json: "E:\\Pojects\\workspace\\forensic-v2\\data\\splits\\ffpp_splits.json"
+
+extraction:
+  n_frames: 32
+  bbox_thresh: 0.95
+  crop_size: 256
+  margin: 0.2
+
+architecture:
+  spatial:
+    backbone: "clip-vit-b16"          # openai/clip-vit-base-patch16
+    pretrained: true
+    clip_hidden_dim: 768              # CLS token pre-projection dim
+    freeze_blocks: 8                  # Freeze patch_embed + first 8 ViT blocks
+    gradient_checkpointing: true      # Enabled on frozen blocks for VRAM safety
+  frequency:
+    enabled: true
+    input_size: 256
+    channels: 256
+  temporal:
+    enabled: true
+    frames: 16                        # Reduced from 32; primary CLIP VRAM lever
+    d_model: 1024                     # 768 (CLIP) + 256 (freq) concat
+    n_heads: 4
+
+training:
+  seed: 42
+  img_size: 256
+  batch_size: 4                       # VRAM-safe for CLIP ViT-B/16, T=16
+  gradient_accumulation_steps: 8      # Effective batch size 32
+  num_workers: 4
+  
+  lrs:
+    classifier_head: 3.0e-4           # Head + frequency branch + temporal module
+    unfrozen_backbone: 1.0e-5         # Unfrozen ViT blocks (9-12) only
+  
+  epochs: 30
+  early_stopping_patience: 5
+  
+  augmentations:
+    hflip_p: 0.5
+    color_jitter_p: 0.2
+    jpeg_p: 0.8
+    jpeg_min_q: 20
+    jpeg_max_q: 55
+  
+  label_smoothing: 0.1
+
+calibration:
+  method: "temperature_then_isotonic"  # Step 1: Temperature scaling, Step 2: Isotonic (PAVA)
+  temperature_init: 1.5
+  temperature_min: 1.0                # Assert T > 1.0 after fitting
+  partition: "calibration"            # FF++ CALIBRATION partition ONLY (10% subjects)
+  lr_formula: "P_fake / (1 - P_fake)"  # LR conversion after isotonic output
