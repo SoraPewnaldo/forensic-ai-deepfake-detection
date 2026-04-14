@@ -1,239 +1,110 @@
-project:
-name: FORENSIC-AI
-owner: Ayush Dakwal
-domain: deepfake-forensics
-objective: >
-Develop a cross-dataset generalizable deepfake detection system
-with likelihood ratio-based forensic calibration suitable for
-court-admissible digital evidence analysis.
+# 🕵️‍♂️ Deepfake Forensic Research
 
-system:
-hardware:
-gpu: NVIDIA RTX 3060 Laptop
-vram_gb: 6
+![Python](https://img.shields.io/badge/Python-3.11-blue.svg)
+![PyTorch](https://img.shields.io/badge/PyTorch-cu121-EE4C2C.svg)
+![Release](https://img.shields.io/badge/Release-V2-green)
+![Status](https://img.shields.io/badge/Status-Complete-success)
 
-os:
-name: Windows
-version: 10
-architecture: x64
+> A cross-dataset generalizable deepfake detection system with likelihood ratio-based forensic calibration suitable for court-admissible digital evidence analysis.
 
-gpu_stack:
-driver: nvidia_geforce_driver (latest_stable)
-cuda: 12.x
-verified: pending
+## 📖 Overview
 
-python:
-version: 3.11
-venv_path: E:\Projects\workspace\venvs\forensic-ai
+Deepfake detection systems often struggle to generalize out-of-the-box in real-world ("in-the-wild") scenarios. Moreover, typical detection models output uncalibrated probabilities, which hold no weight in digital forensic investigations. 
 
-ml_stack:
-pytorch: cu121
-torchvision: true
-torchaudio: true
+This project solves both problems by using a **Multi-Branch Architecture** (Spatial, Temporal, Frequency) coupled with **Forensic Calibration** (Platt/Temperature Scaling) to produce standardized, interpretable Likelihood Ratios (CLLR < 0.4).
 
-paths:
-workspace_root: E:\Projects\workspace\forensic-ai
+### Key Features
+- **Spatial Branch**: CLIP-ViT Backbone targeting deep spatial inconsistencies.
+- **Temporal Module**: Attention-based weighting capturing unnatural intra-frame motions.
+- **Frequency Branch**: DCT/FFT analysis specifically isolating GAN and compression artifacts.
+- **Forensic Validation**: Translates raw binary probabilities into Likelihood Ratios used in court.
+- **Cross-Dataset Generalization**: Evaluated on FF++, WildDeepfake, and Celeb-DF-v2.
 
-datasets:
-ffpp: E:\Projects\workspace\data\ffpp
-wilddeepfake: E:\Projects\workspace\data\wilddeepfake
-celebdf: E:\Projects\workspace\data\celebdf
+---
 
-outputs:
-checkpoints: E:\Projects\workspace\forensic-ai\checkpoints
-logs: E:\Projects\workspace\forensic-ai\logs
-results: E:\Projects\workspace\forensic-ai\results
+## 📂 Project Structure
 
-constraints:
-vram_limit_gb: 6
-batch_size_max: 8
-mixed_precision: true
-gradient_accumulation: true
-cuda_required: true
-no_dataset_leakage: true
-video_level_processing: true
-calibration_mandatory: true
+```bash
+📦 Deepfake-Forensic-Research
+├── 📁 src                   # Main source code
+│   ├── 📁 models            # Network architectures (Backbone, Frequency, Temporal, Fusion)
+│   ├── 📁 training          # Stage 1 and Stage 2 training scripts
+│   ├── 📁 calibration       # Forensic Calibration components
+│   ├── 📁 evaluation        # Evaluation matrices, visualizers (Tippett Plots)
+│   └── 📁 utils             # Data loaders, metric calculations, and logs
+├── 📁 docs                  # Development history, logs, methodology explanations 
+├── 📁 evaluation_results    # Results and output plots (Tippett, ROC, etc.)
+├── 📄 config.yaml           # Global configurations
+├── 📄 requirements.txt      # Python dependencies
+└── 📄 README.md
+```
 
-datasets:
-protocol: staged_cross_dataset
+---
 
-stage1:
-name: FaceForensics++
-role: base_training
-path: E:\Projects\workspace\data\ffpp
+## 🚀 Installation & Setup
 
-stage2:
-name: WildDeepfake
-role: domain_adaptation
-path: E:\Projects\workspace\data\wilddeepfake
+You will need a GPU-enabled machine with at least 6GB of VRAM (e.g., RTX 3060).
 
-stage3:
-name: Celeb-DF-v2
-role: unseen_evaluation
-path: E:\Projects\workspace\data\celebdf
+**1. Clone the repository**
+```bash
+git clone https://github.com/SoraPewnaldo/Deepfake-Forensic-Research.git
+cd Deepfake-Forensic-Research
+```
 
-rules:
-- no_cross_mixing
-- strict_split: [train, validation, calibration, test]
+**2. Create a virtual environment**
+```bash
+python -m venv venvs/forensic-ai
+source venvs/forensic-ai/bin/activate  # On Windows use: venvs\forensic-ai\Scripts\activate
+```
 
-data_pipeline:
-frame_sampling:
-method: uniform
-frames_per_video: 32
+**3. Install dependencies**
+```bash
+pip install -r requirements.txt
+```
 
-preprocessing:
-resize: [224, 224]
-normalization: imagenet
+---
 
-augmentations:
-compression: true
-gaussian_noise: true
-blur: true
+## 💾 Model Checkpoints
 
-model:
-architecture: multimodal_spatiotemporal_frequency
+Due to GitHub's file size limits, the final trained `.pt` model weights are hosted in the **Releases** section of this repository.
 
-spatial_backbone:
-type: vit_base_patch16_224
-source: timm
-pretrained: true
-freeze_initial: true
+*   Download the model weights here: **[🔗 Releases Page](https://github.com/SoraPewnaldo/Deepfake-Forensic-Research/releases)**
+*   Place the downloaded `.pt` files inside the `checkpoints/` folder.
 
-temporal_module:
-type: attention
-purpose: frame_weighting
-hidden_dim: 512
-num_heads: 4
+*(Note: Checkpoints include `best_Stage1_FFPP.pt` and `best_Stage2_Hybrid.pt`)*
 
-frequency_branch:
-enabled: true
-transform: dct_fft
-cnn:
-layers: 3
-channels: [32, 64, 128]
-purpose: detect_compression_and_synthesis_artifacts
+---
 
-fusion:
-method: concatenation
-inputs:
-- spatial
-- temporal
-- frequency
-output_dim: 512
+## 📊 Methodology & Training Stages
 
-classifier:
-type: mlp
-layers: [512, 128, 1]
-output: raw_score
+This project utilizes a strictly staged training protocol to ensure domain adaptation and dataset leak prevention:
 
-training:
-strategy: staged_transfer_learning
+1. **Stage 1 (Base Training - FF++)**: The network's temporal and frequency layers are trained heavily on FaceForensics++.
+2. **Stage 2 (Domain Adaptation - WildDeepfake)**: Layers are slowly unfrozen for in-the-wild fine-tuning.
+3. **Stage 3 (Evaluation Only - Celeb-DF-v2)**: Strict unseen validation. No training occurs on this set. 
+4. **Stage 4 (Calibration)**: Logistic Regression and KD-Estimation convert raw outputs to a Likelihood Ratio.
 
-stage1:
-name: base_training
-dataset: FaceForensics++
-freeze_backbone: true
-train_modules:
-- temporal_module
-- frequency_branch
-- classifier
-epochs: 10
-batch_size: 4
-lr: 1e-4
+For detailed technical methodology, refer to the `docs/Technical_Methodology.md` file.
 
-stage2:
-name: domain_adaptation
-dataset: WildDeepfake
-freeze_backbone: partial
-unfreeze:
-type: top_layers
-count: 4
-lr: 5e-5
-epochs: 5
-batch_size: 4
+---
 
-stage3:
-name: evaluation_only
-dataset: Celeb-DF-v2
-training: false
+## 📈 Evaluation Metrics
 
-optimization:
-optimizer: adamw
-weight_decay: 1e-4
-scheduler:
-type: cosine
-warmup_epochs: 1
+The system is measured against two core paradigms:
 
-loss:
-type: binary_cross_entropy_with_logits
+**1. Discrimination Metrics:**
+- **AUC, HTER, EER**: Evaluates how well the model separates real vs. fake videos.
 
-calibration:
-enabled: true
-method: logistic_regression
-input: raw_scores
-output: likelihood_ratio
-dataset_split: calibration_only
+**2. Calibration Metrics (Forensic standard):**
+- **CLLR (Cost of Log-Likelihood Ratio)**: Defines court-admissibility.
+- **Tippett Plots**: Demonstrates the separation of likelihood ratios visually.
 
-hypothesis:
-H1: manipulated_video
-H0: real_video
+---
 
-evaluation:
-discrimination:
-metrics:
-- auc
-- hter
-- eer
+## 👨‍💻 Author
 
-calibration:
-metrics:
-- cllr
-- tippett_plot
+- **Sora Pewnaldo (Ayush Dakwal)** - *Machine Learning & Digital Forensics*
 
-cross_dataset_tests:
-- train: FaceForensics++
-test: WildDeepfake
-- train: FaceForensics++
-test: Celeb-DF-v2
-- train: WildDeepfake
-test: Celeb-DF-v2
+## 📜 License
 
-output:
-format:
-prediction: [real, fake]
-likelihood_ratio: float
-interpretation: enabled
-
-lr_interpretation:
-strong_fake: ">10"
-moderate_fake: "1-10"
-inconclusive: "~1"
-moderate_real: "0.1-1"
-strong_real: "<0.1"
-
-logging:
-checkpoints: true
-checkpoint_dir: E:\Projects\workspace\forensic-ai\checkpoints
-logs: E:\Projects\workspace\forensic-ai\logs
-verbosity: high
-
-execution_plan:
-steps:
-- verify_pytorch_cuda
-- implement_dataset_loader
-- build_frame_extraction_pipeline
-- load_spatial_backbone
-- implement_temporal_attention
-- implement_frequency_branch
-- integrate_feature_fusion
-- build_training_pipeline
-- implement_calibration_module
-- run_cross_dataset_evaluation
-
-data_splitting:
-method: subject_disjoint
-ratios:
-train: 0.7
-validation: 0.1
-calibration: 0.1
-test: 0.1
+This project is licensed under the MIT License - see the LICENSE file for details.
