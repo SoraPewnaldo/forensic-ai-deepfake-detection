@@ -1,4 +1,4 @@
-# 🕵️ Forensic Deepfake Detection — Multi-Branch ViT with LR Calibration
+# 🕵️ FORENSIC-AI: An Intelligent Deepfake Video Detection for Digital Evidences
 
 <div align="center">
 
@@ -358,10 +358,9 @@ Likelihood Ratio → Forensic Report
 If you use this codebase or methodology in your research, please cite:
 
 ```bibtex
-@misc{deepfake_forensic_2026,
+@misc{forensic_ai_2026,
   author    = {Ayush Dakwal and Aakhya Chauhan},
-  title     = {Forensic Deepfake Detection: Multi-Branch ViT with
-               Court-Admissible Likelihood Ratio Calibration},
+  title     = {FORENSIC-AI: An Intelligent Deepfake Video Detection for Digital Evidences},
   year      = {2026},
   publisher = {GitHub},
   url       = {https://github.com/SoraPewnaldo/Deepfake-Forensic-Research}
