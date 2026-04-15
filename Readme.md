@@ -249,7 +249,7 @@ This project follows a strict **staged cross-dataset protocol** with zero data l
 
 ### 1. Clone the repository
 ```bash
-git clone https://github.com/SoraPewnaldo/Deepfake-Forensic-Research.git
+git clone https://github.com/SoraPewnaldo/forensic-ai-deepfake-detection.git
 cd Deepfake-Forensic-Research
 ```
 
@@ -285,7 +285,7 @@ paths:
 
 Due to GitHub's 100MB file limit, all model weights are hosted in the **Releases** section.
 
-📎 **[Download from Releases →](https://github.com/SoraPewnaldo/Deepfake-Forensic-Research/releases)**
+📎 **[Download from Releases →](https://github.com/SoraPewnaldo/forensic-ai-deepfake-detection/releases)**
 
 | Checkpoint File | Description | Size |
 |:---|:---|:---|
@@ -363,7 +363,7 @@ If you use this codebase or methodology in your research, please cite:
   title     = {FORENSIC-AI: An Intelligent Deepfake Video Detection for Digital Evidences},
   year      = {2026},
   publisher = {GitHub},
-  url       = {https://github.com/SoraPewnaldo/Deepfake-Forensic-Research}
+  url       = {https://github.com/SoraPewnaldo/forensic-ai-deepfake-detection}
 }
 ```
 
