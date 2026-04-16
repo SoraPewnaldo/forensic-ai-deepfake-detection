@@ -17,10 +17,10 @@ Designed for use in digital forensic investigations as scientifically rigorous e
 
 ## 👥 Authors
 
-| Name | Role |
-|:---|:---|
-| **Ayush Dakwal (SoraPewnaldo)** | Lead Researcher — Model Architecture, Training Pipeline, Forensic Calibration |
-| **Aakhya Chauhan** | Co-Researcher — Dataset Preparation, Evaluation Protocol, Analysis |
+- Ayush Dakwal (SoraPewnaldo)  
+- Aakhya Chauhan  
+- Navya Syal  
+- Kandunuri Tharun Sai  
 
 ---
 
@@ -359,7 +359,7 @@ If you use this codebase or methodology in your research, please cite:
 
 ```bibtex
 @misc{forensic_ai_2026,
-  author    = {Ayush Dakwal and Aakhya Chauhan},
+  author    = {Ayush Dakwal, Aakhya Chauhan, Navya Syal and Tharun sai},
   title     = {FORENSIC-AI: An Intelligent Deepfake Video Detection for Digital Evidences},
   year      = {2026},
   publisher = {GitHub},
