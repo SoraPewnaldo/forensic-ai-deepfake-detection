@@ -17,7 +17,7 @@ Designed for use in digital forensic investigations as scientifically rigorous e
 
 ## 👥 Authors
 
-- Ayush Dakwal (SoraPewnaldo)  
+- Ayush Dakwal
 - Aakhya Chauhan  
 - Navya Syal  
 - Kandunuri Tharun Sai  
