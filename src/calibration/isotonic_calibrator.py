@@ -1,11 +1,11 @@
 """
 Isotonic Regression Calibrator for Forensic-v2.
 Implements PAVA (Pool Adjacent Violators Algorithm) via sklearn.
-Converts calibrated probabilities → Likelihood Ratios (LR).
+Converts calibrated probabilities  Likelihood Ratios (LR).
 
 Court-admissible output formula:
     LR = P(score | fake) / P(score | real)
-       ≈ P_calibrated / (1 - P_calibrated)      [log-odds form]
+        P_calibrated / (1 - P_calibrated)      [log-odds form]
 """
 import json
 import numpy as np
@@ -29,8 +29,8 @@ class IsotonicCalibrator:
         Fit PAVA on temperature-scaled probabilities from the CAL partition.
 
         Args:
-            probs:  Sigmoid(logits / T)  — shape [N]
-            labels: Binary ground truth  — shape [N]
+            probs:  Sigmoid(logits / T)  - shape [N]
+            labels: Binary ground truth  - shape [N]
         """
         self.iso.fit(probs, labels)
         self._fitted = True
@@ -51,8 +51,8 @@ class IsotonicCalibrator:
     def predict_lr(self, probs: np.ndarray) -> np.ndarray:
         """
         Return Likelihood Ratio: LR = p_cal / (1 - p_cal).
-        Values < 1 → evidence for real.
-        Values > 1 → evidence for fake.
+        Values < 1  evidence for real.
+        Values > 1  evidence for fake.
         """
         p_cal = self.predict_prob(probs)
         # Clip to prevent division by zero

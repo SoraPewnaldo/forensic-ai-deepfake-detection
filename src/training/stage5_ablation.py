@@ -14,7 +14,7 @@ All variants use identical:
   - Training data:   FF++ (Stage 1, frozen backbone blocks 0-7)
   - Early stopping:  CelebDF Proxy AUC (patience=5)
   - Optimiser:       AdamW, dual-LR, same schedule
-  - Head capacity:   1024 → 512 → 1
+  - Head capacity:   1024  512  1
 
 After training, run src.evaluation.run_ablation_eval to produce comparison tables.
 
@@ -76,7 +76,7 @@ def main():
     set_global_seed(config.training.seed)
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-    logger.info("INIT: Forensic-AI V2.1 Stage 5 — Scientific Ablation Training")
+    logger.info("INIT: Forensic-AI V2.1 Stage 5 - Scientific Ablation Training")
     logger.info(f"Running {len(ABLATION_VARIANTS)} variants (Baseline, Beta).")
     logger.info("Gamma (full model) = best_Stage2_Hybrid.pt (already trained).")
 

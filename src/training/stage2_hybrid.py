@@ -51,7 +51,7 @@ def main():
     # 4. Hybrid data (FF++ + WildDeepfake)
     train_loader, val_loader, test_loader = get_dataloaders(stage=2)
 
-    # 5. Trainer — stage name controls checkpoint filename
+    # 5. Trainer - stage name controls checkpoint filename
     trainer = ForensicTrainer(model, device, stage_name="Stage2_Hybrid")
     trainer.run_training(train_loader, val_loader, test_loader)
 

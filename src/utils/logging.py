@@ -13,7 +13,7 @@ def get_logger(name: str) -> logging.Logger:
 
     logger.setLevel(logging.DEBUG)
 
-    # Console handler — stdout, UTF-8 forced
+    # Console handler - stdout, UTF-8 forced
     handler = logging.StreamHandler(sys.stdout)
     handler.setLevel(logging.DEBUG)
 

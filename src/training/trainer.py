@@ -113,7 +113,7 @@ class ForensicTrainer:
             all_labels.extend(labels.tolist())
 
         if len(set(all_labels)) < 2:
-            logger.warning(f"[{tag}] Only one class present — AUC undefined, returning 0.5")
+            logger.warning(f"[{tag}] Only one class present - AUC undefined, returning 0.5")
             return 0.5
 
         return roc_auc_score(all_labels, all_probs)

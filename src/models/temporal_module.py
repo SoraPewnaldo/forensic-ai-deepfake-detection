@@ -12,7 +12,7 @@ class TemporalModule(nn.Module):
     Multi-Head Self-Attention over T fused frame embeddings.
 
     V2 Design (MASTER_DESIGN.md):
-    - Input: (B, T, d_model) — concatenated spatial + frequency features
+    - Input: (B, T, d_model) - concatenated spatial + frequency features
     - Learnable positional encoding
     - 4 attention heads
     - Mean-pool over T to produce final video-level representation (B, d_model)
@@ -31,7 +31,7 @@ class TemporalModule(nn.Module):
         assert d_model % n_heads == 0, \
             f"d_model ({d_model}) must be divisible by n_heads ({n_heads})"
 
-        # Learnable positional encoding (not sinusoidal — allows the model
+        # Learnable positional encoding (not sinusoidal - allows the model
         # to learn forensically relevant positional priors, e.g., first/last frames)
         self.pos_embed = nn.Parameter(torch.zeros(1, T, d_model))
         nn.init.trunc_normal_(self.pos_embed, std=0.02)
@@ -50,9 +50,9 @@ class TemporalModule(nn.Module):
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         """
         Args:
-            x: (B, T, d_model) — fused frame features
+            x: (B, T, d_model) - fused frame features
         Returns:
-            video_repr: (B, d_model) — mean-pooled temporal representation
+            video_repr: (B, d_model) - mean-pooled temporal representation
         """
         # Add positional encoding
         x = x + self.pos_embed[:, :x.size(1), :]

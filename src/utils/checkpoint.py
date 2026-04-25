@@ -50,7 +50,7 @@ def load_checkpoint(
         missing = set(current_keys) - set(loaded_keys)
         extra = set(loaded_keys) - set(current_keys)
         
-        # Buffers are fixed non-learned tensors — safe to ignore cross-stage.
+        # Buffers are fixed non-learned tensors - safe to ignore cross-stage.
         # Check both current model buffers AND saved checkpoint buffers.
         current_buffer_names = {n for n, _ in model.named_buffers()}
         saved_state = checkpoint['model_state']

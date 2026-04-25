@@ -36,7 +36,7 @@ def fit_temperature(
     Optimise temperature T by minimising NLL on calibration partition logits.
 
     Args:
-        logits:  Raw model logits [N] — collected on 'cal' split ONLY.
+        logits:  Raw model logits [N] - collected on 'cal' split ONLY.
         labels:  Binary ground-truth [N].
         max_iter: LBFGS iterations.
         lr:       Learning rate for LBFGS.

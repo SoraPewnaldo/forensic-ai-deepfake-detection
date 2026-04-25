@@ -27,7 +27,7 @@ class AblationForensicModel(nn.Module):
 
     All variants share:
     - Same CLIP-ViT spatial backbone (same freeze policy).
-    - Same classification head (1024 → 1).
+    - Same classification head (1024  1).
     - Same fusion dimensionality (1024).
 
     Only the presence/absence of modality branches varies.
@@ -46,26 +46,26 @@ class AblationForensicModel(nn.Module):
 
         fusion_dim = config.architecture.temporal.d_model  # 1024
 
-        # ── Spatial branch (always present) ─────────────────────────────────
+        #  Spatial branch (always present) 
         self.spatial = CLIPViTBackbone()
         spatial_hidden = config.architecture.spatial.clip_hidden_dim  # 768
 
         if use_frequency:
-            # Project each branch to 512 then concatenate → 1024
+            # Project each branch to 512 then concatenate  1024
             self.spatial_proj = nn.Linear(spatial_hidden, 512)
             self.frequency     = FrequencyBranch()
             self.freq_proj     = nn.Linear(config.architecture.frequency.channels, 512)
         else:
-            # Project spatial directly to fusion_dim → 1024
+            # Project spatial directly to fusion_dim  1024
             self.spatial_proj = nn.Linear(spatial_hidden, fusion_dim)
 
-        # ── Temporal branch (optional) ───────────────────────────────────────
+        #  Temporal branch (optional) 
         if use_temporal:
             self.temporal = TemporalModule()  # expects [B, T, fusion_dim]
         else:
             self.temporal = None  # mean-pool over T instead
 
-        # ── Classification head (shared capacity across all variants) ────────
+        #  Classification head (shared capacity across all variants) 
         self.head = nn.Sequential(
             nn.Linear(fusion_dim, 512),
             nn.BatchNorm1d(512),
@@ -86,7 +86,7 @@ class AblationForensicModel(nn.Module):
         )
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
-        """Input: [B, T, 3, H, W] → Output: logit [B, 1]"""
+        """Input: [B, T, 3, H, W]  Output: logit [B, 1]"""
         z = self.spatial_proj(self.spatial(x))   # [B, T, 512 or 1024]
 
         if self.use_frequency:
@@ -96,7 +96,7 @@ class AblationForensicModel(nn.Module):
         if self.use_temporal:
             z = self.temporal(z)   # [B, 1024]
         else:
-            z = z.mean(dim=1)      # mean-pool over T → [B, 1024]
+            z = z.mean(dim=1)      # mean-pool over T  [B, 1024]
 
         logits = self.head(z)      # [B, 1]
         return logits / self.temperature

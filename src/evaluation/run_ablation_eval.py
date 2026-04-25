@@ -103,7 +103,7 @@ def run_ablation_eval():
     for variant in VARIANTS:
         ckpt_path = _CKPT_DIR / f"best_{variant['ckpt']}.pt"
         if not ckpt_path.exists():
-            logger.warning(f"Checkpoint not found: {ckpt_path} — skipping {variant['name']}")
+            logger.warning(f"Checkpoint not found: {ckpt_path} - skipping {variant['name']}")
             continue
 
         logger.info(f"\n[ABLATION EVAL] Variant: {variant['name']}")
@@ -122,13 +122,13 @@ def run_ablation_eval():
 
         all_results[variant["name"]] = variant_results
 
-    # ── Save JSON ───────────────────────────────────────────────────────────
+    #  Save JSON 
     out_path = _OUT_DIR / "ablation_results.json"
     with open(out_path, "w") as f:
         json.dump(all_results, f, indent=2)
     logger.info(f"\nAblation results saved: {out_path}")
 
-    # ── Print comparison table ──────────────────────────────────────────────
+    #  Print comparison table 
     datasets_order = ["FFPP", "CelebDF", "Wild"]
     header = f"{'Variant':<22} | " + " | ".join(
         f"{d} AUC  CLLR" for d in datasets_order

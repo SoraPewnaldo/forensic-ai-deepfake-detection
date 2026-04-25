@@ -1,7 +1,7 @@
 """
 Forensic Evaluation Metrics for Forensic-v2.
 Implements: AUC, EER, HTER, CLLR, Average Precision.
-All functions are pure numpy — no torch dependency at runtime.
+All functions are pure numpy - no torch dependency at runtime.
 """
 import numpy as np
 from sklearn.metrics import roc_auc_score, average_precision_score, roc_curve
@@ -68,8 +68,8 @@ def compute_cllr(lr_values: np.ndarray, labels: np.ndarray) -> float:
         C_llr_real = (1/N_r) * sum log2(1 + LR_i)      for real samples
         C_llr_fake = (1/N_f) * sum log2(1 + 1/LR_i)    for fake samples
 
-    LR values < 1 → evidence for real.
-    LR values > 1 → evidence for fake.
+    LR values < 1  evidence for real.
+    LR values > 1  evidence for fake.
     Target: CLLR < 0.4 for forensic admissibility.
     """
     lr = np.clip(lr_values.astype(np.float64), 1e-9, 1e9)

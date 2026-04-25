@@ -82,7 +82,7 @@ def run_evaluation(stage2_ckpt: Path | None = None) -> dict:
 
     for name, ds in eval_datasets.items():
         if len(ds) == 0:
-            logger.warning(f"Skipping {name} — dataset is empty.")
+            logger.warning(f"Skipping {name} - dataset is empty.")
             continue
 
         loader = DataLoader(ds, batch_size=bs, shuffle=False, num_workers=nw)
@@ -104,7 +104,7 @@ def run_evaluation(stage2_ckpt: Path | None = None) -> dict:
         plot_tippett(
             lr_values, labels,
             output_path=_EVAL_DIR / f"tippett_{name}.png",
-            title=f"Tippett Plot — {name}",
+            title=f"Tippett Plot - {name}",
         )
 
         logger.info(

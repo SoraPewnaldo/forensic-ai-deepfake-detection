@@ -89,7 +89,7 @@ def run_ablation(stage2_ckpt: Path | None = None) -> dict:
 
     for ds_name, ds in dataset_map.items():
         if len(ds) == 0:
-            logger.warning(f"Ablation: Skipping {ds_name} — empty dataset.")
+            logger.warning(f"Ablation: Skipping {ds_name} - empty dataset.")
             continue
         loader = DataLoader(ds, batch_size=bs, shuffle=False, num_workers=nw)
         results[ds_name] = {}

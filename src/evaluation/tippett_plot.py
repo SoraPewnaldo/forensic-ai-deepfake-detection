@@ -5,7 +5,7 @@ Mandatory output for court-admissible LR reporting.
 A Tippett plot shows:
   - CDF of log10(LR) for real samples (should be left-shifted)
   - CDF of log10(LR) for fake samples (should be right-shifted)
-  - Ideal discrimination → separation around log10(LR)=0
+  - Ideal discrimination  separation around log10(LR)=0
 """
 import numpy as np
 import matplotlib
